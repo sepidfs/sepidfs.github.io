@@ -29,11 +29,15 @@ const photo = "/images/mascot.png";
       <span class="eye-mask right-mask"></span>
 
       <span class="eye left-eye">
-        <span class="iris"><span class="pupil"></span></span>
+        <span class="iris">
+          <span class="pupil"></span>
+        </span>
       </span>
 
       <span class="eye right-eye">
-        <span class="iris"><span class="pupil"></span></span>
+        <span class="iris">
+          <span class="pupil"></span>
+        </span>
       </span>
 
       <span id="mascot-lid"></span>
@@ -80,47 +84,46 @@ const photo = "/images/mascot.png";
   .eye {
     position: absolute;
     z-index: 5;
-    width: 20px;
-    height: 11px;
-    border-radius: 55% 55% 50% 50%;
+    width: 17px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
     overflow: hidden;
-    background: #f8f8f8;
-    border: 1px solid rgba(255,255,255,0.9);
-    box-shadow: 0 0 3px rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,.95);
+    box-shadow: 0 0 2px rgba(255,255,255,.5);
   }
 
   .left-eye {
-    left: 48px;
-    top: 49px;
-    transform: rotate(10deg);
+    left: 49px;
+    top: 50px;
+    transform: rotate(8deg) scaleY(.72);
   }
 
   .right-eye {
-    left: 78px;
+    left: 79px;
     top: 53px;
-    transform: rotate(-6deg);
+    transform: rotate(-5deg) scaleY(.72);
   }
 
   .iris {
     position: absolute;
     left: 6px;
     top: 2px;
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: #8a430d;
-    box-shadow: inset 0 0 2px #000;
-    will-change: transform;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #9b5b18;
+    transition: transform .05s linear;
   }
 
   .pupil {
     position: absolute;
-    left: 2.2px;
-    top: 2.2px;
-    width: 3.8px;
-    height: 3.8px;
-    border-radius: 999px;
-    background: #050505;
+    left: 1.5px;
+    top: 1.5px;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: #000;
   }
 
   #mascot-lid {
@@ -175,7 +178,7 @@ const photo = "/images/mascot.png";
         `rotateY(${cx * 12}deg) rotateX(${-cy * 9}deg) translate(${cx * 3}px, ${cy * 2}px)`;
 
       irises.forEach((eye) => {
-        eye.style.transform = `translate(${cx * 4}px, ${cy * 2.5}px)`;
+        eye.style.transform = `translate(${cx * 3}px, ${cy * 1.6}px)`;
       });
 
       requestAnimationFrame(animateFace);
