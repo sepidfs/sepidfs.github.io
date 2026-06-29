@@ -1,15 +1,14 @@
 ---
 // Interactive corner mascot using the real line-art portrait.
-//  - the PHOTO stays completely still (no tilt, no zoom animation)
-//  - two small brown pupils overlaid on the drawing's eyes follow the mouse
+//  - the whole face gently rotates in 3D toward the mouse (like it's looking at you)
+//  - no zoom-in/out, no artificial pupils
 //  - blinks every few seconds
 //  - click to show a random speech bubble
 //
 // SETUP: save the portrait at  public/images/mascot.png
-// Fine-tune the two .mascot-pupil left/top % so each dot sits over an eye.
 const photo = "/images/mascot.png";
 ---
-<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
+<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none" style="perspective: 600px;">
   <div
     id="mascot-bubble"
     class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
@@ -22,19 +21,16 @@ const photo = "/images/mascot.png";
     id="mascot-btn"
     aria-label="Talk to me"
     class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
+    style="transform-style: preserve-3d;"
   >
-    <!-- still photo (no animation on the image itself) -->
     <img
+      id="mascot-img"
       src={photo}
       alt="Sepideh"
       class="h-full w-full rounded-full object-cover object-[center_30%] scale-[1.5] brightness-150 contrast-150"
+      style="transition: transform 0.15s ease-out;"
       draggable="false"
     />
-
-    <!-- moving brown pupils placed over the drawing's eyes.
-         Adjust left/top % until each dot covers a real pupil. -->
-    <span class="mascot-pupil pointer-events-none absolute left-[46%] top-[43%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
-    <span class="mascot-pupil pointer-events-none absolute left-[58%] top-[45%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
 
     <!-- eyelid for blinking -->
     <span
@@ -60,39 +56,38 @@ const photo = "/images/mascot.png";
     ];
 
     const btn = document.getElementById("mascot-btn");
+    const img = document.getElementById("mascot-img");
     const lid = document.getElementById("mascot-lid");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
-    const pupils = document.querySelectorAll(".mascot-pupil");
 
-    // ONLY the pupils move toward the mouse; the photo never moves
+    // whole face rotates in 3D toward the mouse (no zoom)
     window.addEventListener("mousemove", (e) => {
-      pupils.forEach((p) => {
-        const r = p.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
-        const dist = 2;
-        const x = Math.cos(angle) * dist;
-        const y = Math.sin(angle) * dist;
-        p.style.transform = "translate(calc(-50% + " + x + "px), calc(-50% + " + y + "px))";
-      });
+      const r = btn.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) / window.innerWidth;
+      const dy = (e.clientY - cy) / window.innerHeight;
+      const maxDeg = 18;
+      const rotY = Math.max(-maxDeg, Math.min(maxDeg, dx * 70));
+      const rotX = Math.max(-maxDeg, Math.min(maxDeg, -dy * 70));
+      img.style.transform = "scale(1.5) rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
     });
 
     // blink every few seconds
     function blink() {
       lid.style.height = "55%";
-      setTimeout(() => { lid.style.height = "0"; }, 130);
+      setTimeout(function () { lid.style.height = "0"; }, 130);
       setTimeout(blink, 3500 + Math.random() * 4000);
     }
     setTimeout(blink, 2500);
 
     // greet once on load
-    setTimeout(() => {
+    setTimeout(function () {
       text.textContent = lines[0];
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
-      setTimeout(() => {
+      setTimeout(function () {
         bubble.classList.add("opacity-0", "translate-y-2");
         bubble.classList.remove("opacity-100", "translate-y-0");
       }, 4500);
@@ -100,12 +95,12 @@ const photo = "/images/mascot.png";
 
     // click to talk
     let hideTimer = null;
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", function () {
       text.textContent = lines[Math.floor(Math.random() * lines.length)];
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
       if (hideTimer) clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => {
+      hideTimer = setTimeout(function () {
         bubble.classList.add("opacity-0", "translate-y-2");
         bubble.classList.remove("opacity-100", "translate-y-0");
       }, 4000);
