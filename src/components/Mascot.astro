@@ -1,185 +1,108 @@
 ---
-const lines = [
-  "Hi! Welcome to my little corner of the internet. 👋",
-  "Feel free to explore my research, publications, and projects.",
-  "Warning: Mathematical curiosity may be contagious.",
-  "Machine learning is easy... until the math shows up.",
-  "Some ideas begin with coffee. The good ones end with proofs.",
-  "Ask me about Lehmer Activation Units.",
-  "Optimization is where mathematics meets intelligence.",
-  "Behind every model is a mathematical story.",
-  "Looking for a PhD student? We should probably talk.",
-  "Thanks for visiting—I hope you enjoy exploring my work!"
-];
+// Interactive corner mascot — uses your real line-art portrait, with small
+// dark pupils overlaid on the drawing's eyes that follow the mouse, plus a
+// click-to-talk speech bubble (welcoming + research/PhD lines).
+//
+// SETUP: save your portrait at  public/images/mascot.png
+// Then fine-tune the two .mascot-pupil left/top % values so the moving pupils
+// sit exactly over the eyes of YOUR image.
+const photo = "/images/mascot.png";
 ---
-
 <div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
+  <!-- speech bubble -->
   <div
     id="mascot-bubble"
-    class="pointer-events-none absolute bottom-full right-0 mb-4 w-72 rounded-2xl border border-white/10 bg-[#05070d]/95 px-5 py-4 text-sm italic leading-6 text-gray-200 opacity-0 shadow-2xl backdrop-blur-xl transition-all duration-300"
+    class="pointer-events-none absolute bottom-full right-0 mb-3 w-60 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
   >
-    <span id="mascot-text">Hi! I'm Sepideh.</span>
-    <span class="absolute -bottom-2 right-8 h-4 w-4 rotate-45 border-b border-r border-white/10 bg-[#05070d]"></span>
+    <span id="mascot-text"></span>
+    <span class="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-white/15 bg-[#0b0e18]/95"></span>
   </div>
 
+  <!-- avatar button -->
   <button
     id="mascot-btn"
-    aria-label="Talk to Sepideh avatar"
-    class="group relative block h-32 w-32 overflow-hidden rounded-[2rem] border border-white/15 bg-[#05070d] shadow-2xl transition hover:scale-105 hover:border-blue-300/50 focus:outline-none"
+    aria-label="Talk to me"
+    class="group relative block h-24 w-24 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-xl transition hover:scale-105 hover:border-pink-300/60 focus:outline-none"
   >
-    <svg
-      class="h-full w-full"
-      viewBox="0 0 140 140"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="140" height="140" rx="28" fill="#05070d" />
+    <img
+      src={photo}
+      alt="Sepideh"
+      class="h-full w-full rounded-full object-cover object-[center_22%]"
+      draggable="false"
+    />
 
-      <!-- hair -->
-      <path d="M35 122 C25 82, 30 42, 55 25 C73 13, 103 22, 113 52 C124 83, 115 108, 109 124"
-        stroke="white" stroke-opacity="0.35" stroke-width="1.3" />
-      <path d="M45 123 C36 82, 41 47, 62 29 C78 16, 101 29, 108 57 C115 87, 106 111, 101 124"
-        stroke="white" stroke-opacity="0.55" stroke-width="1.2" />
-      <path d="M52 25 C43 46, 39 78, 41 124"
-        stroke="white" stroke-opacity="0.22" stroke-width="1" />
-      <path d="M71 23 C83 51, 98 82, 94 124"
-        stroke="white" stroke-opacity="0.22" stroke-width="1" />
+    <!-- moving pupils overlaid on the portrait's eyes.
+         Adjust left/top % so each dot sits over the corresponding eye. -->
+    <span class="mascot-pupil pointer-events-none absolute left-[40%] top-[40%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3a2a1e] transition-transform duration-75"></span>
+    <span class="mascot-pupil pointer-events-none absolute left-[57%] top-[41%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3a2a1e] transition-transform duration-75"></span>
 
-      <!-- face -->
-      <path d="M43 58 C45 36, 63 25, 82 30 C102 35, 110 54, 106 76 C102 101, 86 114, 68 111 C51 108, 41 84, 43 58Z"
-        stroke="white" stroke-opacity="0.75" stroke-width="1.3" />
-
-      <!-- eyebrows -->
-      <path d="M54 58 C60 53, 66 53, 71 57" stroke="white" stroke-opacity="0.8" stroke-width="1.4" />
-      <path d="M80 57 C86 52, 93 53, 98 58" stroke="white" stroke-opacity="0.8" stroke-width="1.4" />
-
-      <!-- eyes -->
-      <g class="eye" data-cx="62" data-cy="67">
-        <path d="M52 67 C57 61, 67 61, 72 67 C67 73, 57 73, 52 67Z"
-          stroke="white" stroke-opacity="0.9" stroke-width="1.2" />
-        <circle class="pupil" cx="62" cy="67" r="3.2" fill="#7c3aed" />
-        <circle class="highlight" cx="63.2" cy="65.8" r="0.9" fill="white" fill-opacity="0.9" />
-        <rect class="lid" x="50" y="60" width="24" height="16" fill="#05070d" opacity="0" />
-      </g>
-
-      <g class="eye" data-cx="90" data-cy="67">
-        <path d="M80 67 C85 61, 95 61, 100 67 C95 73, 85 73, 80 67Z"
-          stroke="white" stroke-opacity="0.9" stroke-width="1.2" />
-        <circle class="pupil" cx="90" cy="67" r="3.2" fill="#7c3aed" />
-        <circle class="highlight" cx="91.2" cy="65.8" r="0.9" fill="white" fill-opacity="0.9" />
-        <rect class="lid" x="78" y="60" width="24" height="16" fill="#05070d" opacity="0" />
-      </g>
-
-      <!-- nose -->
-      <path d="M75 72 C72 79, 71 84, 77 85" stroke="white" stroke-opacity="0.55" stroke-width="1" />
-
-      <!-- colored lips -->
-      <path d="M62 94 C69 100, 82 100, 90 94" stroke="#f4a7b9" stroke-width="2.2" stroke-linecap="round" />
-      <path d="M64 94 C70 91, 82 91, 88 94" stroke="#f4a7b9" stroke-opacity="0.8" stroke-width="1.3" />
-
-      <!-- blazer -->
-      <path d="M42 139 C50 119, 58 111, 69 111" stroke="white" stroke-opacity="0.35" stroke-width="1.2" />
-      <path d="M107 139 C98 119, 87 111, 76 111" stroke="white" stroke-opacity="0.35" stroke-width="1.2" />
-
-      <!-- earring -->
-      <path d="M105 73 C110 81, 108 91, 104 96" stroke="white" stroke-opacity="0.45" stroke-width="1" />
-    </svg>
+    <!-- online dot -->
+    <span class="absolute bottom-1.5 right-1.5 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
   </button>
 </div>
 
-<style>
-  .blink .lid {
-    animation: blink 170ms ease-in-out;
-  }
-
-  @keyframes blink {
-    0% {
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: center top;
-    }
-    45% {
-      opacity: 1;
-      transform: scaleY(1);
-      transform-origin: center top;
-    }
-    100% {
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: center top;
-    }
-  }
-</style>
-
 <script is:inline>
-  const lines = [
-    "Still reading? Good. That means the design works.",
-    "Ask me about Lehmer Activation Units.",
-    "Currently optimizing this corner of the page.",
-    "I promise this is not overfitting.",
-    "Tiny avatar. Large research ambitions.",
-    "PhD application mode: activated.",
-  ];
+  (() => {
+    const lines = [
+      // welcoming / cute
+      "Hi there! Welcome to my little corner ✨",
+      "Feel free to explore my research, publications, and projects.",
+      "Warning: Mathematical curiosity may be contagious.",
+      "Machine learning is easy... until the math shows up.",
+      "Some ideas begin with coffee. The good ones end with proofs.",
+      "Optimization is where mathematics meets intelligence.",
+      "Behind every model is a mathematical story.",
+      "Thanks for visiting—I hope you enjoy exploring my work!"
+      // playful
+      "Is it just me, or is the scroll bar getting a workout?",
+      "Psst… the View Paper buttons actually work!",
+      "Still reading? You might like my publications.",
+      // research / PhD
+      "Ask me about Lehmer Activation Units!",
+      "Currently seeking a PhD home for Fall 2027 🎓",
+    ];
 
-  const btn = document.getElementById("mascot-btn");
-  const bubble = document.getElementById("mascot-bubble");
-  const text = document.getElementById("mascot-text");
-  const eyes = document.querySelectorAll(".eye");
+    const btn = document.getElementById("mascot-btn");
+    const bubble = document.getElementById("mascot-bubble");
+    const text = document.getElementById("mascot-text");
+    const pupils = document.querySelectorAll(".mascot-pupil");
 
-  let index = 0;
-
-  function showBubble() {
-    text.textContent = lines[index % lines.length];
-    index++;
-
-    bubble.classList.remove("opacity-0");
-    bubble.classList.add("opacity-100");
-
-    setTimeout(() => {
-      bubble.classList.remove("opacity-100");
-      bubble.classList.add("opacity-0");
-    }, 4200);
-  }
-
-  btn?.addEventListener("click", showBubble);
-
-  window.addEventListener("mousemove", (event) => {
-    eyes.forEach((eye) => {
-      const pupil = eye.querySelector(".pupil");
-      const highlight = eye.querySelector(".highlight");
-
-      const cx = Number(eye.dataset.cx);
-      const cy = Number(eye.dataset.cy);
-
-      const svg = eye.closest("svg");
-      const rect = svg.getBoundingClientRect();
-
-      const mouseX = ((event.clientX - rect.left) / rect.width) * 140;
-      const mouseY = ((event.clientY - rect.top) / rect.height) * 140;
-
-      const dx = mouseX - cx;
-      const dy = mouseY - cy;
-      const angle = Math.atan2(dy, dx);
-
-      const radius = 2.6;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-
-      pupil.setAttribute("transform", `translate(${x}, ${y})`);
-      highlight.setAttribute("transform", `translate(${x}, ${y})`);
+    // pupils follow the mouse (small travel so they stay over the eyes)
+    window.addEventListener("mousemove", (e) => {
+      pupils.forEach((p) => {
+        const r = p.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+        const dist = 1.8;
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist;
+        p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      });
     });
-  });
 
-  function blink() {
-    eyes.forEach((eye) => eye.classList.add("blink"));
-
+    // greet once on first load
     setTimeout(() => {
-      eyes.forEach((eye) => eye.classList.remove("blink"));
-    }, 190);
+      text.textContent = "Hi there! Welcome to my little corner ✨";
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4500);
+    }, 1200);
 
-    const nextBlink = 2600 + Math.random() * 3600;
-    setTimeout(blink, nextBlink);
-  }
-
-  setTimeout(blink, 1800);
+    // click to talk
+    let hideTimer = null;
+    btn.addEventListener("click", () => {
+      text.textContent = lines[Math.floor(Math.random() * lines.length)];
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4000);
+    });
+  })();
 </script>
