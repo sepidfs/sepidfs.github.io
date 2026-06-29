@@ -1,6 +1,6 @@
 ---
-// Interactive corner mascot — uses your real line-art portrait, with small
-// dark pupils overlaid on the drawing's eyes that follow the mouse, plus a
+// Interactive corner mascot - uses your real line-art portrait, with small
+// dark pupils overlaid on the the drawing eyes that follow the mouse, plus a
 // click-to-talk speech bubble (welcoming + research/PhD lines).
 //
 // SETUP: save your portrait at  public/images/mascot.png
@@ -44,22 +44,14 @@ const photo = "/images/mascot.png";
 <script is:inline>
   (() => {
     const lines = [
-      // welcoming / cute
-      "Hi there! Welcome to my little corner ✨",
+      "Hi! Welcome to my little corner of the internet.",
       "Feel free to explore my research, publications, and projects.",
       "Warning: Mathematical curiosity may be contagious.",
       "Machine learning is easy... until the math shows up.",
       "Some ideas begin with coffee. The good ones end with proofs.",
       "Optimization is where mathematics meets intelligence.",
       "Behind every model is a mathematical story.",
-      "Thanks for visiting—I hope you enjoy exploring my work!"
-      // playful
-      "Is it just me, or is the scroll bar getting a workout?",
-      "Psst… the View Paper buttons actually work!",
-      "Still reading? You might like my publications.",
-      // research / PhD
-      "Ask me about Lehmer Activation Units!",
-      "Currently seeking a PhD home for Fall 2027 🎓",
+      "Thanks for visiting - I hope you enjoy exploring my work!",
     ];
 
     const btn = document.getElementById("mascot-btn");
@@ -83,7 +75,7 @@ const photo = "/images/mascot.png";
 
     // greet once on first load
     setTimeout(() => {
-      text.textContent = "Hi there! Welcome to my little corner ✨";
+      text.textContent = "Hi! Welcome to my little corner of the internet.";
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
       setTimeout(() => {
