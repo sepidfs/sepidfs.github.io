@@ -53,52 +53,66 @@ const photo = "/images/mascot.png";
     pointer-events: none;
   }
 
-  .eye-mask {
-    position: absolute;
-    z-index: 3;
-    background: #020202;
-    border-radius: 50%;
-  }
-
-  .left-mask {
-    left: 46px;
-    top: 48px;
-    width: 22px;
-    height: 13px;
-    transform: rotate(10deg);
-  }
-
-  .right-mask {
-    left: 77px;
-    top: 52px;
-    width: 21px;
-    height: 13px;
-    transform: rotate(-6deg);
-  }
-
   .eye {
-    position: absolute;
-    z-index: 5;
-    width: 9px;
-    height: 4px;
-    border-radius: 50%;
-    background: #fff;
-    overflow: hidden;
-    border: 0.5px solid rgba(255,255,255,.9);
-    box-shadow: 0 0 1px rgba(255,255,255,.4);
-  }
+  position: absolute;
+  z-index: 5;
+  width: 12px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #fff;
+  overflow: hidden;
+  border: 0.6px solid rgba(255,255,255,.9);
+  box-shadow: 0 0 1px rgba(255,255,255,.45);
+}
 
-  .left-eye {
-    left: 53px;
-    top: 52px;
-    transform: rotate(8deg) scaleY(.75);
-  }
+.left-eye {
+  left: 52px;
+  top: 51px;
+  transform: rotate(8deg) scaleY(.78);
+}
 
-  .right-eye {
-    left: 83px;
-    top: 55px;
-    transform: rotate(-5deg) scaleY(.75);
-  }
+.right-eye {
+  left: 79px;
+  top: 54px;
+  transform: rotate(-5deg) scaleY(.78);
+}
+
+.iris {
+  position: absolute;
+  left: 4.2px;
+  top: 1.2px;
+  width: 3.6px;
+  height: 3.6px;
+  border-radius: 50%;
+  background: #9b5b18;
+  transition: transform .05s linear;
+}
+
+.pupil {
+  position: absolute;
+  left: 1.1px;
+  top: 1.1px;
+  width: 1.4px;
+  height: 1.4px;
+  border-radius: 50%;
+  background: #000;
+}
+
+.left-mask {
+  left: 46px;
+  top: 48px;
+  width: 22px;
+  height: 13px;
+  transform: rotate(10deg);
+}
+
+.right-mask {
+  left: 75px;
+  top: 52px;
+  width: 22px;
+  height: 13px;
+  transform: rotate(-6deg);
+}
 
   .iris {
     position: absolute;
@@ -175,7 +189,7 @@ const photo = "/images/mascot.png";
         `rotateY(${cx * 10}deg) rotateX(${-cy * 7}deg) translate(${cx * 2}px, ${cy * 1.5}px)`;
 
       irises.forEach((eye) => {
-        eye.style.transform = `translate(${cx * 1.4}px, ${cy * 0.7}px)`;
+        eye.style.transform = `translate(${cx * 1.1}px, ${cy * 0.55}px)`;
       });
 
       requestAnimationFrame(animateFace);
