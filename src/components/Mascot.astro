@@ -1,12 +1,13 @@
 ---
-// Corner mascot that "looks" toward the mouse by swapping between 8 portrait
+// Corner mascot that "looks" toward the mouse by swapping between 9 portrait
 // images (different head angles). No zoom, no rotation, no fake pupils.
 //  - the image switches based on where the mouse is relative to the avatar
-//  - blinks (quick fade) every few seconds
+//  - blinks (quick dim) every few seconds
 //  - click to show a random speech bubble
 //
 // SETUP: put these files in  public/images/mascot/
-//   Front.png Up.png Down.png Left.png Right.png UpLeft.png DownLeft.png DownRight.png
+//   Front.png Up.png Down.png Left.png Right.png
+//   UpLeft.png RightUp.png DownLeft.png DownRight.png
 const base = "/images/mascot";
 ---
 <div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
@@ -60,7 +61,7 @@ const base = "/images/mascot";
     function pick(col, row) {
       if (row === 0) {
         if (col === 0) return "UpLeft";
-        if (col === 2) return "Up";        // no UpRight provided -> use Up
+        if (col === 2) return "RightUp";
         return "Up";
       }
       if (row === 2) {
@@ -68,7 +69,6 @@ const base = "/images/mascot";
         if (col === 2) return "DownRight";
         return "Down";
       }
-      // middle row
       if (col === 0) return "Left";
       if (col === 2) return "Right";
       return "Front";
@@ -87,7 +87,7 @@ const base = "/images/mascot";
       const cy = r.top + r.height / 2;
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
-      const dead = 40; // pixels of "looking straight" zone
+      const dead = 40;
       const col = dx < -dead ? 0 : dx > dead ? 2 : 1;
       const row = dy < -dead ? 0 : dy > dead ? 2 : 1;
       setFace(pick(col, row));
