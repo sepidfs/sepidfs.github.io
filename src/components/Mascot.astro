@@ -3,20 +3,38 @@ const photo = "/images/mascot.png";
 ---
 
 <div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none" style="perspective: 800px;">
-  <div id="mascot-bubble" class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300">
+  <div
+    id="mascot-bubble"
+    class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
+  >
     <span id="mascot-text"></span>
     <span class="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-white/15 bg-[#0b0e18]/95"></span>
   </div>
 
-  <button id="mascot-btn" aria-label="Talk to me" class="relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none">
+  <button
+    id="mascot-btn"
+    aria-label="Talk to me"
+    class="relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
+  >
     <div id="mascot-head" class="relative h-full w-full rounded-full">
-      <img id="mascot-img" src={photo} alt="Sepideh" class="absolute inset-0 h-full w-full rounded-full object-cover" draggable="false" />
+      <img
+        id="mascot-img"
+        src={photo}
+        alt="Sepideh"
+        class="absolute inset-0 h-full w-full rounded-full object-cover"
+        draggable="false"
+      />
 
       <span class="eye-mask left-mask"></span>
       <span class="eye-mask right-mask"></span>
 
-      <span class="eye left-eye"><span class="iris"><span class="pupil"></span></span></span>
-      <span class="eye right-eye"><span class="iris"><span class="pupil"></span></span></span>
+      <span class="eye left-eye">
+        <span class="iris"><span class="pupil"></span></span>
+      </span>
+
+      <span class="eye right-eye">
+        <span class="iris"><span class="pupil"></span></span>
+      </span>
 
       <span id="mascot-lid"></span>
     </div>
@@ -61,33 +79,33 @@ const photo = "/images/mascot.png";
   .eye {
     position: absolute;
     z-index: 5;
-    width: 11px;
-    height: 5px;
+    width: 9px;
+    height: 4px;
     border-radius: 50%;
     background: #fff;
     overflow: hidden;
-    border: 0.6px solid rgba(255,255,255,.9);
+    border: 0.5px solid rgba(255,255,255,.9);
     box-shadow: 0 0 1px rgba(255,255,255,.4);
   }
 
   .left-eye {
-    left: 52px;
-    top: 51px;
-    transform: rotate(8deg) scaleY(.78);
+    left: 53px;
+    top: 52px;
+    transform: rotate(8deg) scaleY(.75);
   }
 
   .right-eye {
-    left: 82px;
-    top: 54px;
-    transform: rotate(-5deg) scaleY(.78);
+    left: 83px;
+    top: 55px;
+    transform: rotate(-5deg) scaleY(.75);
   }
 
   .iris {
     position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 3px;
-    height: 3px;
+    left: 3.2px;
+    top: 0.8px;
+    width: 2.6px;
+    height: 2.6px;
     border-radius: 50%;
     background: #9b5b18;
     transition: transform .05s linear;
@@ -95,8 +113,8 @@ const photo = "/images/mascot.png";
 
   .pupil {
     position: absolute;
-    left: 1px;
-    top: 1px;
+    left: 0.8px;
+    top: 0.8px;
     width: 1px;
     height: 1px;
     border-radius: 50%;
@@ -135,8 +153,10 @@ const photo = "/images/mascot.png";
     const text = document.getElementById("mascot-text");
     const irises = document.querySelectorAll(".iris");
 
-    let tx = 0, ty = 0;
-    let cx = 0, cy = 0;
+    let tx = 0;
+    let ty = 0;
+    let cx = 0;
+    let cy = 0;
 
     window.addEventListener("mousemove", (e) => {
       const r = btn.getBoundingClientRect();
@@ -152,10 +172,10 @@ const photo = "/images/mascot.png";
       cy += (ty - cy) * 0.08;
 
       head.style.transform =
-        `rotateY(${cx * 12}deg) rotateX(${-cy * 9}deg) translate(${cx * 3}px, ${cy * 2}px)`;
+        `rotateY(${cx * 10}deg) rotateX(${-cy * 7}deg) translate(${cx * 2}px, ${cy * 1.5}px)`;
 
       irises.forEach((eye) => {
-        eye.style.transform = `translate(${cx * 2}px, ${cy * 1px}px)`;
+        eye.style.transform = `translate(${cx * 1.4}px, ${cy * 0.7}px)`;
       });
 
       requestAnimationFrame(animateFace);
@@ -165,7 +185,10 @@ const photo = "/images/mascot.png";
 
     function blink() {
       lid.style.height = "58%";
-      setTimeout(() => { lid.style.height = "0"; }, 120);
+      setTimeout(() => {
+        lid.style.height = "0";
+      }, 120);
+
       setTimeout(blink, 3000 + Math.random() * 4500);
     }
 
