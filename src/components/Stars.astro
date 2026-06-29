@@ -1,0 +1,67 @@
+<div id="stars"></div>
+
+<style>
+#stars{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    overflow:hidden;
+}
+
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    border-radius:50%;
+    background:white;
+    opacity:.7;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+
+    from{
+        transform:translateY(-10px);
+        opacity:0;
+    }
+
+    20%{
+        opacity:.9;
+    }
+
+    to{
+        transform:translateY(100vh);
+        opacity:0;
+    }
+
+}
+</style>
+
+<script>
+
+const container=document.getElementById("stars");
+
+for(let i=0;i<350;i++){
+
+    const s=document.createElement("div");
+
+    s.className="star";
+
+    s.style.left=Math.random()*100+"vw";
+
+    s.style.top=Math.random()*100+"vh";
+
+    s.style.width=Math.random()*2+1+"px";
+
+    s.style.height=s.style.width;
+
+    s.style.animationDuration=(8+Math.random()*20)+"s";
+
+    s.style.animationDelay=(-Math.random()*20)+"s";
+
+    container.appendChild(s);
+
+}
+
+</script>
