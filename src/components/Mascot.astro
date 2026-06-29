@@ -22,17 +22,9 @@ const photo = "/images/mascot.png";
         id="mascot-img"
         src={photo}
         alt="Sepideh"
-        class="h-full w-full rounded-full object-cover object-[center_30%] scale-[1.5] brightness-150 contrast-150"
+        class="h-full w-full rounded-full object-cover object-center brightness-125 contrast-125"
         draggable="false"
       />
-
-      <span class="mascot-eye left-eye">
-        <span class="mascot-pupil"></span>
-      </span>
-
-      <span class="mascot-eye right-eye">
-        <span class="mascot-pupil"></span>
-      </span>
 
       <span id="mascot-lid"></span>
     </div>
@@ -49,42 +41,9 @@ const photo = "/images/mascot.png";
 
   #mascot-img {
     pointer-events: none;
+    transform: scale(1.08);
     transition: transform 0.08s linear;
-  }
-
-  .mascot-eye {
-    position: absolute;
-    z-index: 5;
-    width: 14px;
-    height: 8px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92);
-    overflow: hidden;
-    box-shadow: 0 0 3px rgba(255,255,255,0.45);
-  }
-
-  .left-eye {
-    left: 50px;
-    top: 52px;
-    transform: rotate(8deg);
-  }
-
-  .right-eye {
-    left: 78px;
-    top: 52px;
-    transform: rotate(-5deg);
-  }
-
-  .mascot-pupil {
-    position: absolute;
-    left: 5px;
-    top: 2px;
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: #2b1408;
-    box-shadow: 0 0 0 1.5px #050505;
-    transition: transform 0.05s linear;
+    will-change: transform;
   }
 
   #mascot-lid {
@@ -94,7 +53,7 @@ const photo = "/images/mascot.png";
     inset-inline: 0;
     top: 0;
     height: 0;
-    background: #050505;
+    background: rgba(5, 5, 5, 0.96);
     transition: height 0.1s ease-in;
   }
 </style>
@@ -118,7 +77,6 @@ const photo = "/images/mascot.png";
     const lid = document.getElementById("mascot-lid");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
-    const pupils = document.querySelectorAll(".mascot-pupil");
 
     let tx = 0, ty = 0;
     let cx = 0, cy = 0;
@@ -128,26 +86,22 @@ const photo = "/images/mascot.png";
       const mx = r.left + r.width / 2;
       const my = r.top + r.height / 2;
 
-      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 350));
-      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 350));
+      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 420));
+      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 420));
     });
 
     function animateFace() {
-      cx += (tx - cx) * 0.08;
-      cy += (ty - cy) * 0.08;
+      cx += (tx - cx) * 0.075;
+      cy += (ty - cy) * 0.075;
 
-      const rotY = cx * 18;
-      const rotX = -cy * 14;
+      const rotY = cx * 14;
+      const rotX = -cy * 10;
 
       head.style.transform =
-        `rotateY(${rotY}deg) rotateX(${rotX}deg) translate(${cx * 4}px, ${cy * 3}px)`;
+        `rotateY(${rotY}deg) rotateX(${rotX}deg) translate(${cx * 3}px, ${cy * 2}px)`;
 
       img.style.transform =
-        `scale(1.5) translate(${cx * 4}px, ${cy * 3}px)`;
-
-      pupils.forEach((p) => {
-        p.style.transform = `translate(${cx * 4}px, ${cy * 3}px)`;
-      });
+        `scale(1.08) translate(${cx * 5}px, ${cy * 4}px)`;
 
       requestAnimationFrame(animateFace);
     }
@@ -155,19 +109,27 @@ const photo = "/images/mascot.png";
     animateFace();
 
     function blink() {
-      lid.style.height = "55%";
-      setTimeout(() => { lid.style.height = "0"; }, 130);
+      lid.style.height = "45%";
+      setTimeout(() => {
+        lid.style.height = "0";
+      }, 120);
+
       setTimeout(blink, 3000 + Math.random() * 4500);
     }
 
-    setTimeout(blink, 2000);
+    setTimeout(blink, 2200);
+
+    let bubbleTimer = null;
 
     function showBubble(message, duration = 4000) {
       text.textContent = message;
+
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
 
-      setTimeout(() => {
+      if (bubbleTimer) clearTimeout(bubbleTimer);
+
+      bubbleTimer = setTimeout(() => {
         bubble.classList.add("opacity-0", "translate-y-2");
         bubble.classList.remove("opacity-100", "translate-y-0");
       }, duration);
@@ -175,9 +137,7 @@ const photo = "/images/mascot.png";
 
     setTimeout(() => showBubble(lines[0], 4500), 1200);
 
-    let hideTimer = null;
     btn.addEventListener("click", () => {
-      if (hideTimer) clearTimeout(hideTimer);
       showBubble(lines[Math.floor(Math.random() * lines.length)], 4000);
     });
   })();
