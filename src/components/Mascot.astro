@@ -1,14 +1,8 @@
 ---
-// Interactive corner mascot using the real line-art portrait.
-//  - the whole face gently rotates in 3D toward the mouse (like it's looking at you)
-//  - no zoom-in/out, no artificial pupils
-//  - blinks every few seconds
-//  - click to show a random speech bubble
-//
-// SETUP: save the portrait at  public/images/mascot.png
 const photo = "/images/mascot.png";
 ---
-<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none" style="perspective: 600px;">
+
+<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
   <div
     id="mascot-bubble"
     class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
@@ -20,25 +14,23 @@ const photo = "/images/mascot.png";
   <button
     id="mascot-btn"
     aria-label="Talk to me"
-    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
-    style="transform-style: preserve-3d;"
+    class="group relative block h-36 w-36 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition hover:scale-105 hover:border-pink-300/60 focus:outline-none"
   >
-    <img
-      id="mascot-img"
-      src={photo}
-      alt="Sepideh"
-      class="h-full w-full rounded-full object-cover object-[center_30%] scale-[1.5] brightness-150 contrast-150"
-      style="transition: transform 0.15s ease-out;"
-      draggable="false"
-    />
+    <div id="mascot-face" class="relative h-full w-full rounded-full transition-transform duration-150 ease-out will-change-transform">
+      <img
+        src={photo}
+        alt="Sepideh"
+        class="h-full w-full rounded-full object-cover object-[center_38%] brightness-150 contrast-150"
+        draggable="false"
+      />
 
-    <!-- eyelid for blinking -->
-    <span
-      id="mascot-lid"
-      class="pointer-events-none absolute inset-x-0 top-0 h-0 bg-[#050505] transition-[height] duration-100 ease-in"
-    ></span>
+      <span
+        id="mascot-lid"
+        class="pointer-events-none absolute left-0 top-[33%] h-0 w-full bg-[#050505]/95 transition-[height] duration-100 ease-in"
+      ></span>
+    </div>
 
-    <span class="absolute bottom-1.5 right-1.5 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
+    <span class="absolute bottom-1.5 right-1.5 h-3.5 w-3.5 rounded-full border-2 border-[#0b0e18] bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.8)]"></span>
   </button>
 </div>
 
@@ -47,63 +39,68 @@ const photo = "/images/mascot.png";
     const lines = [
       "Hi! Welcome to my little corner of the internet.",
       "Feel free to explore my research, publications, and projects.",
-      "Warning: Mathematical curiosity may be contagious.",
-      "Machine learning is easy... until the math shows up.",
+      "Warning: mathematical curiosity may be contagious.",
+      "Machine learning is fun. Proving why it works is even better.",
       "Some ideas begin with coffee. The good ones end with proofs.",
       "Optimization is where mathematics meets intelligence.",
       "Behind every model is a mathematical story.",
-      "Thanks for visiting - I hope you enjoy exploring my work!",
+      "Thanks for visiting — I hope you enjoy exploring my work!",
     ];
 
     const btn = document.getElementById("mascot-btn");
-    const img = document.getElementById("mascot-img");
+    const face = document.getElementById("mascot-face");
     const lid = document.getElementById("mascot-lid");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
 
-    // whole face rotates in 3D toward the mouse (no zoom)
-    window.addEventListener("mousemove", (e) => {
-      const r = btn.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const dx = (e.clientX - cx) / window.innerWidth;
-      const dy = (e.clientY - cy) / window.innerHeight;
-      const maxDeg = 18;
-      const rotY = Math.max(-maxDeg, Math.min(maxDeg, dx * 70));
-      const rotX = Math.max(-maxDeg, Math.min(maxDeg, -dy * 70));
-      img.style.transform = "scale(1.5) rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
+    window.addEventListener("mousemove", (event) => {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      const dx = (event.clientX - cx) / rect.width;
+      const dy = (event.clientY - cy) / rect.height;
+
+      const rotateY = Math.max(-10, Math.min(10, dx * 10));
+      const rotateX = Math.max(-10, Math.min(10, -dy * 10));
+
+      face.style.transform =
+        `perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    // blink every few seconds
     function blink() {
-      lid.style.height = "55%";
-      setTimeout(function () { lid.style.height = "0"; }, 130);
-      setTimeout(blink, 3500 + Math.random() * 4000);
+      lid.style.height = "22%";
+
+      setTimeout(() => {
+        lid.style.height = "0";
+      }, 140);
+
+      setTimeout(blink, 2800 + Math.random() * 3600);
     }
-    setTimeout(blink, 2500);
 
-    // greet once on load
-    setTimeout(function () {
-      text.textContent = lines[0];
-      bubble.classList.remove("opacity-0", "translate-y-2");
-      bubble.classList.add("opacity-100", "translate-y-0");
-      setTimeout(function () {
-        bubble.classList.add("opacity-0", "translate-y-2");
-        bubble.classList.remove("opacity-100", "translate-y-0");
-      }, 4500);
-    }, 1200);
+    setTimeout(blink, 1800);
 
-    // click to talk
     let hideTimer = null;
-    btn.addEventListener("click", function () {
-      text.textContent = lines[Math.floor(Math.random() * lines.length)];
+
+    function showBubble(message) {
+      text.textContent = message;
+
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
+
       if (hideTimer) clearTimeout(hideTimer);
-      hideTimer = setTimeout(function () {
+
+      hideTimer = setTimeout(() => {
         bubble.classList.add("opacity-0", "translate-y-2");
         bubble.classList.remove("opacity-100", "translate-y-0");
-      }, 4000);
+      }, 4300);
+    }
+
+    setTimeout(() => showBubble(lines[0]), 1200);
+
+    btn?.addEventListener("click", () => {
+      const random = lines[Math.floor(Math.random() * lines.length)];
+      showBubble(random);
     });
   })();
 </script>
