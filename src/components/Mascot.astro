@@ -1,7 +1,14 @@
 ---
-const photo = "/images/mascot.png";
+// Corner mascot that "looks" toward the mouse by swapping between 8 portrait
+// images (different head angles). No zoom, no rotation, no fake pupils.
+//  - the image switches based on where the mouse is relative to the avatar
+//  - blinks (quick fade) every few seconds
+//  - click to show a random speech bubble
+//
+// SETUP: put these files in  public/images/mascot/
+//   Front.png Up.png Down.png Left.png Right.png UpLeft.png DownLeft.png DownRight.png
+const base = "/images/mascot";
 ---
-
 <div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
   <div
     id="mascot-bubble"
@@ -14,13 +21,14 @@ const photo = "/images/mascot.png";
   <button
     id="mascot-btn"
     aria-label="Talk to me"
-    class="relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
+    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
   >
     <img
       id="mascot-img"
-      src={photo}
+      src={`${base}/Front.png`}
+      data-base={base}
       alt="Sepideh"
-      class="absolute inset-0 h-full w-full rounded-full object-cover"
+      class="h-full w-full rounded-full object-cover transition-opacity duration-150"
       draggable="false"
     />
 
@@ -45,49 +53,76 @@ const photo = "/images/mascot.png";
     const img = document.getElementById("mascot-img");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
+    const base = img.getAttribute("data-base");
 
-    let tx = 0, ty = 0, cx = 0, cy = 0;
+    // map a (col,row) of the 3x3 grid to an image name.
+    // col: 0=left 1=center 2=right   row: 0=up 1=middle 2=down
+    function pick(col, row) {
+      if (row === 0) {
+        if (col === 0) return "UpLeft";
+        if (col === 2) return "Up";        // no UpRight provided -> use Up
+        return "Up";
+      }
+      if (row === 2) {
+        if (col === 0) return "DownLeft";
+        if (col === 2) return "DownRight";
+        return "Down";
+      }
+      // middle row
+      if (col === 0) return "Left";
+      if (col === 2) return "Right";
+      return "Front";
+    }
+
+    let current = "Front";
+    function setFace(name) {
+      if (name === current) return;
+      current = name;
+      img.src = base + "/" + name + ".png";
+    }
 
     window.addEventListener("mousemove", (e) => {
       const r = btn.getBoundingClientRect();
-      const mx = r.left + r.width / 2;
-      const my = r.top + r.height / 2;
-
-      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 500));
-      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 500));
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dead = 40; // pixels of "looking straight" zone
+      const col = dx < -dead ? 0 : dx > dead ? 2 : 1;
+      const row = dy < -dead ? 0 : dy > dead ? 2 : 1;
+      setFace(pick(col, row));
     });
 
-    function animateFace() {
-      cx += (tx - cx) * 0.07;
-      cy += (ty - cy) * 0.07;
-
-      img.style.transform =
-        `translate(${cx * 5}px, ${cy * 4}px) rotate(${cx * 3}deg)`;
-
-      requestAnimationFrame(animateFace);
+    // blink: quick dim of the image
+    function blink() {
+      img.style.opacity = "0.25";
+      setTimeout(function () { img.style.opacity = "1"; }, 120);
+      setTimeout(blink, 3500 + Math.random() * 4000);
     }
+    setTimeout(blink, 2500);
 
-    animateFace();
-
-    let bubbleTimer = null;
-
-    function showBubble(message, duration = 4000) {
-      text.textContent = message;
+    // greet once on load
+    setTimeout(function () {
+      text.textContent = lines[0];
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
-
-      if (bubbleTimer) clearTimeout(bubbleTimer);
-
-      bubbleTimer = setTimeout(() => {
+      setTimeout(function () {
         bubble.classList.add("opacity-0", "translate-y-2");
         bubble.classList.remove("opacity-100", "translate-y-0");
-      }, duration);
-    }
+      }, 4500);
+    }, 1200);
 
-    setTimeout(() => showBubble(lines[0], 4500), 1200);
-
-    btn.addEventListener("click", () => {
-      showBubble(lines[Math.floor(Math.random() * lines.length)], 4000);
+    // click to talk
+    let hideTimer = null;
+    btn.addEventListener("click", function () {
+      text.textContent = lines[Math.floor(Math.random() * lines.length)];
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4000);
     });
   })();
 </script>
