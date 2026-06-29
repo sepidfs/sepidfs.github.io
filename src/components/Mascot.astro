@@ -2,7 +2,7 @@
 const photo = "/images/mascot.png";
 ---
 
-<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none" style="perspective: 800px;">
+<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
   <div
     id="mascot-bubble"
     class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
@@ -14,49 +14,19 @@ const photo = "/images/mascot.png";
   <button
     id="mascot-btn"
     aria-label="Talk to me"
-    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
-    style="transform-style: preserve-3d;"
+    class="relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
   >
-    <div id="mascot-head" class="relative h-full w-full rounded-full" style="transform-style: preserve-3d;">
-      <img
-        id="mascot-img"
-        src={photo}
-        alt="Sepideh"
-        class="h-full w-full rounded-full object-cover object-center brightness-125 contrast-125"
-        draggable="false"
-      />
-
-      <span id="mascot-lid"></span>
-    </div>
+    <img
+      id="mascot-img"
+      src={photo}
+      alt="Sepideh"
+      class="absolute inset-0 h-full w-full rounded-full object-contain"
+      draggable="false"
+    />
 
     <span class="absolute bottom-1.5 right-1.5 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
   </button>
 </div>
-
-<style>
-  #mascot-head {
-    transition: transform 0.08s linear;
-    will-change: transform;
-  }
-
-  #mascot-img {
-    pointer-events: none;
-    transform: scale(1.08);
-    transition: transform 0.08s linear;
-    will-change: transform;
-  }
-
-  #mascot-lid {
-    pointer-events: none;
-    position: absolute;
-    z-index: 10;
-    inset-inline: 0;
-    top: 0;
-    height: 0;
-    background: rgba(5, 5, 5, 0.96);
-    transition: height 0.1s ease-in;
-  }
-</style>
 
 <script is:inline>
   (() => {
@@ -72,9 +42,7 @@ const photo = "/images/mascot.png";
     ];
 
     const btn = document.getElementById("mascot-btn");
-    const head = document.getElementById("mascot-head");
     const img = document.getElementById("mascot-img");
-    const lid = document.getElementById("mascot-lid");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
 
@@ -86,38 +54,21 @@ const photo = "/images/mascot.png";
       const mx = r.left + r.width / 2;
       const my = r.top + r.height / 2;
 
-      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 420));
-      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 420));
+      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 500));
+      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 500));
     });
 
     function animateFace() {
-      cx += (tx - cx) * 0.075;
-      cy += (ty - cy) * 0.075;
-
-      const rotY = cx * 14;
-      const rotX = -cy * 10;
-
-      head.style.transform =
-        `rotateY(${rotY}deg) rotateX(${rotX}deg) translate(${cx * 3}px, ${cy * 2}px)`;
+      cx += (tx - cx) * 0.07;
+      cy += (ty - cy) * 0.07;
 
       img.style.transform =
-        `scale(1.08) translate(${cx * 5}px, ${cy * 4}px)`;
+        `translate(${cx * 5}px, ${cy * 4}px) rotate(${cx * 4}deg)`;
 
       requestAnimationFrame(animateFace);
     }
 
     animateFace();
-
-    function blink() {
-      lid.style.height = "45%";
-      setTimeout(() => {
-        lid.style.height = "0";
-      }, 120);
-
-      setTimeout(blink, 3000 + Math.random() * 4500);
-    }
-
-    setTimeout(blink, 2200);
 
     let bubbleTimer = null;
 
