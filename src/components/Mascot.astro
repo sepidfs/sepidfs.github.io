@@ -1,0 +1,100 @@
+---
+// Interactive corner avatar:
+//  - shows your real photo
+//  - two eyes overlaid on the photo that follow the mouse
+//  - click to show a random speech bubble (mix of playful + research/PhD lines)
+//
+// Put your photo at: public/images/profile.jpg  (same one used in the hero)
+// Tweak EYE positions below to line them up with your photo's eyes.
+const photo = "/images/profile.jpg";
+---
+<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
+  <!-- speech bubble -->
+  <div
+    id="mascot-bubble"
+    class="pointer-events-none absolute bottom-full right-0 mb-3 w-56 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
+  >
+    <span id="mascot-text"></span>
+    <span class="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-white/15 bg-[#0b0e18]/95"></span>
+  </div>
+
+  <!-- avatar -->
+  <button
+    id="mascot-btn"
+    aria-label="Talk to me"
+    class="group relative block h-20 w-20 rounded-full border-2 border-white/20 bg-[#0b0e18] shadow-xl transition hover:scale-105 hover:border-blue-400/50 focus:outline-none"
+  >
+    <img
+      src={photo}
+      alt="Sepideh"
+      class="h-full w-full rounded-full object-cover object-[center_15%]"
+      draggable="false"
+    />
+
+    <!-- moving eyes overlaid on the photo -->
+    <!-- adjust left/top % so the white sclera sits over your real eyes -->
+    <span class="mascot-eye absolute left-[34%] top-[40%] flex h-3 w-3 items-center justify-center rounded-full bg-white shadow-inner">
+      <span class="mascot-pupil h-1.5 w-1.5 rounded-full bg-gray-900 transition-transform duration-75"></span>
+    </span>
+    <span class="mascot-eye absolute left-[57%] top-[40%] flex h-3 w-3 items-center justify-center rounded-full bg-white shadow-inner">
+      <span class="mascot-pupil h-1.5 w-1.5 rounded-full bg-gray-900 transition-transform duration-75"></span>
+    </span>
+
+    <!-- little online dot -->
+    <span class="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
+  </button>
+</div>
+
+<script is:inline>
+  (() => {
+    const lines = [
+      // playful
+      "Is it just me, or is the scroll bar getting a workout?",
+      "Still reading? You might like my publications.",
+      "Psst… the View Paper buttons actually work.",
+      "I promise I'm friendlier than a rejected p-value.",
+      "Coffee level: optimal. Let's talk research.",
+      // research / PhD
+      "Ask me about Lehmer Activation Units!",
+      "Yes, I really do enjoy mixed-integer programming.",
+      "Interpretable AI > black boxes. Fight me (politely).",
+      "Currently seeking a PhD home for Fall 2027.",
+      "Optimization is just elegant decision-making.",
+    ];
+
+    const btn = document.getElementById("mascot-btn");
+    const bubble = document.getElementById("mascot-bubble");
+    const text = document.getElementById("mascot-text");
+    const pupils = document.querySelectorAll(".mascot-pupil");
+    const eyes = document.querySelectorAll(".mascot-eye");
+
+    let hideTimer = null;
+
+    // eyes follow the mouse
+    window.addEventListener("mousemove", (e) => {
+      eyes.forEach((eye, i) => {
+        const r = eye.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+        const dist = 2.2; // max pupil travel in px
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist;
+        pupils[i].style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
+
+    // click to talk
+    btn.addEventListener("click", () => {
+      const line = lines[Math.floor(Math.random() * lines.length)];
+      text.textContent = line;
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4000);
+    });
+  })();
+</script>
