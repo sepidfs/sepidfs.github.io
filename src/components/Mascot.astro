@@ -1,84 +1,54 @@
 ---
+// Interactive corner mascot - uses your real line-art portrait, with small
+// dark pupils overlaid on the the drawing eyes that follow the mouse, plus a
+// click-to-talk speech bubble (welcoming + research/PhD lines).
+//
+// SETUP: save your portrait at  public/images/mascot.png
+// Then fine-tune the two .mascot-pupil left/top % values so the moving pupils
+// sit exactly over the eyes of YOUR image.
 const photo = "/images/mascot.png";
 ---
-
 <div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
+  <!-- speech bubble -->
   <div
     id="mascot-bubble"
-    class="pointer-events-none absolute bottom-full right-0 mb-3 w-72 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-5 py-4 text-sm italic leading-6 text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
+    class="pointer-events-none absolute bottom-full right-0 mb-3 w-60 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
   >
     <span id="mascot-text"></span>
-    <span class="absolute -bottom-1.5 right-10 h-3 w-3 rotate-45 border-b border-r border-white/15 bg-[#0b0e18]/95"></span>
+    <span class="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-white/15 bg-[#0b0e18]/95"></span>
   </div>
 
+  <!-- avatar button -->
   <button
     id="mascot-btn"
     aria-label="Talk to me"
-    class="group relative block h-36 w-36 overflow-hidden rounded-full border-2 border-white/25 bg-[#05070d] shadow-2xl transition hover:scale-105 hover:border-pink-300/60 focus:outline-none"
+    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition hover:scale-105 hover:border-pink-300/60 focus:outline-none"
   >
     <img
       src={photo}
       alt="Sepideh"
-      class="h-full w-full rounded-full object-cover object-[center_30%] scale-[1.65] brightness-150 contrast-175 saturate-125"
+      class="h-full w-full rounded-full object-cover object-[center_32%] scale-[1.55] brightness-125 contrast-150 saturate-125"
       draggable="false"
     />
 
-    <!-- pupils -->
-    <span
-      class="mascot-pupil pointer-events-none absolute left-[44.5%] top-[39.5%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2b1b10] shadow-[0_0_4px_rgba(255,255,255,0.5)] transition-transform duration-75"
-    ></span>
-    <span
-      class="mascot-pupil pointer-events-none absolute left-[56.5%] top-[39.8%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2b1b10] shadow-[0_0_4px_rgba(255,255,255,0.5)] transition-transform duration-75"
-    ></span>
+    <span class="mascot-pupil pointer-events-none absolute left-[44%] top-[39%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3a2a1e] transition-transform duration-75"></span>
+    <span class="mascot-pupil pointer-events-none absolute left-[57%] top-[40%] h-[5px] w-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3a2a1e] transition-transform duration-75"></span>
 
-    <!-- eyelids -->
-    <span
-      class="mascot-lid pointer-events-none absolute left-[39%] top-[36.5%] h-[10px] w-[16px] rounded-full bg-[#05070d] opacity-0"
-    ></span>
-    <span
-      class="mascot-lid pointer-events-none absolute left-[51%] top-[36.8%] h-[10px] w-[16px] rounded-full bg-[#05070d] opacity-0"
-    ></span>
-
-    <span class="absolute bottom-2 right-2 h-3.5 w-3.5 rounded-full border-2 border-[#05070d] bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.8)]"></span>
+    <span class="absolute bottom-1.5 right-1.5 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
   </button>
 </div>
-
-<style>
-  .mascot-blink .mascot-lid {
-    animation: mascotBlink 180ms ease-in-out;
-  }
-
-  @keyframes mascotBlink {
-    0% {
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: top;
-    }
-    45% {
-      opacity: 1;
-      transform: scaleY(1.15);
-      transform-origin: top;
-    }
-    100% {
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: top;
-    }
-  }
-</style>
 
 <script is:inline>
   (() => {
     const lines = [
-      "Hi! Welcome to my little corner of the internet. 👋",
+      "Hi! Welcome to my little corner of the internet.",
       "Feel free to explore my research, publications, and projects.",
-      "Warning: mathematical curiosity may be contagious.",
-      "Machine learning is fun. Proving why it works is even better.",
+      "Warning: Mathematical curiosity may be contagious.",
+      "Machine learning is easy... until the math shows up.",
       "Some ideas begin with coffee. The good ones end with proofs.",
       "Optimization is where mathematics meets intelligence.",
       "Behind every model is a mathematical story.",
-      "Looking for a PhD student? We should probably talk.",
-      "Thanks for visiting — I hope you enjoy exploring my work!",
+      "Thanks for visiting - I hope you enjoy exploring my work!",
     ];
 
     const btn = document.getElementById("mascot-btn");
@@ -86,62 +56,42 @@ const photo = "/images/mascot.png";
     const text = document.getElementById("mascot-text");
     const pupils = document.querySelectorAll(".mascot-pupil");
 
-    let hideTimer = null;
-
-    function showBubble(message) {
-      text.textContent = message;
-
-      bubble.classList.remove("opacity-0", "translate-y-2");
-      bubble.classList.add("opacity-100", "translate-y-0");
-
-      if (hideTimer) clearTimeout(hideTimer);
-
-      hideTimer = setTimeout(() => {
-        bubble.classList.add("opacity-0", "translate-y-2");
-        bubble.classList.remove("opacity-100", "translate-y-0");
-      }, 4300);
-    }
-
-    setTimeout(() => {
-      showBubble(lines[0]);
-    }, 1200);
-
-    btn?.addEventListener("click", () => {
-      const random = lines[Math.floor(Math.random() * lines.length)];
-      showBubble(random);
-    });
-
-    window.addEventListener("mousemove", (event) => {
-      pupils.forEach((pupil) => {
-        const rect = pupil.getBoundingClientRect();
-
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-
-        const dx = event.clientX - cx;
-        const dy = event.clientY - cy;
-
-        const angle = Math.atan2(dy, dx);
-        const distance = 2.4;
-
-        const x = Math.cos(angle) * distance;
-        const y = Math.sin(angle) * distance;
-
-        pupil.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+    // pupils follow the mouse (small travel so they stay over the eyes)
+    window.addEventListener("mousemove", (e) => {
+      pupils.forEach((p) => {
+        const r = p.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+        const dist = 1.8;
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist;
+        p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
       });
     });
 
-    function blink() {
-      btn?.classList.add("mascot-blink");
-
+    // greet once on first load
+    setTimeout(() => {
+      text.textContent = "Hi! Welcome to my little corner of the internet.";
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
       setTimeout(() => {
-        btn?.classList.remove("mascot-blink");
-      }, 200);
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4500);
+    }, 1200);
 
-      const nextBlink = 2600 + Math.random() * 3200;
-      setTimeout(blink, nextBlink);
-    }
-
-    setTimeout(blink, 1800);
+    // click to talk
+    let hideTimer = null;
+    btn.addEventListener("click", () => {
+      text.textContent = lines[Math.floor(Math.random() * lines.length)];
+      bubble.classList.remove("opacity-0", "translate-y-2");
+      bubble.classList.add("opacity-100", "translate-y-0");
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        bubble.classList.add("opacity-0", "translate-y-2");
+        bubble.classList.remove("opacity-100", "translate-y-0");
+      }, 4000);
+    });
   })();
 </script>
