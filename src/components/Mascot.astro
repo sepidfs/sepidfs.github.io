@@ -21,20 +21,20 @@ const photo = "/images/mascot.png";
   <button
     id="mascot-btn"
     aria-label="Talk to me"
-    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-transform duration-200 hover:scale-105 hover:border-pink-300/60 focus:outline-none"
+    class="group relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
   >
     <!-- still photo (no animation on the image itself) -->
     <img
       src={photo}
       alt="Sepideh"
-      class="h-full w-full rounded-full object-cover object-[center_38%] scale-[1.9] brightness-150 contrast-150"
+      class="h-full w-full rounded-full object-cover object-[center_30%] scale-[1.5] brightness-150 contrast-150"
       draggable="false"
     />
 
     <!-- moving brown pupils placed over the drawing's eyes.
          Adjust left/top % until each dot covers a real pupil. -->
-    <span class="mascot-pupil pointer-events-none absolute left-[45%] top-[40%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
-    <span class="mascot-pupil pointer-events-none absolute left-[58%] top-[42%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
+    <span class="mascot-pupil pointer-events-none absolute left-[46%] top-[43%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
+    <span class="mascot-pupil pointer-events-none absolute left-[58%] top-[45%] h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4a3324] transition-transform duration-75"></span>
 
     <!-- eyelid for blinking -->
     <span
