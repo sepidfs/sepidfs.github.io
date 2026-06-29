@@ -2,7 +2,7 @@
 const photo = "/images/mascot.png";
 ---
 
-<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none">
+<div id="mascot" class="fixed bottom-5 right-5 z-[60] select-none" style="perspective: 800px;">
   <div
     id="mascot-bubble"
     class="pointer-events-none absolute bottom-full right-0 mb-3 w-64 translate-y-2 rounded-2xl border border-white/15 bg-[#0b0e18]/95 px-4 py-3 text-sm italic text-gray-200 opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300"
@@ -16,17 +16,124 @@ const photo = "/images/mascot.png";
     aria-label="Talk to me"
     class="relative block h-32 w-32 overflow-hidden rounded-full border-2 border-white/25 bg-[#0b0e18] shadow-2xl transition-colors duration-200 hover:border-pink-300/60 focus:outline-none"
   >
-    <img
-      id="mascot-img"
-      src={photo}
-      alt="Sepideh"
-      class="absolute inset-0 h-full w-full rounded-full object-contain"
-      draggable="false"
-    />
+    <div id="mascot-head" class="relative h-full w-full rounded-full">
+      <img
+        id="mascot-img"
+        src={photo}
+        alt="Sepideh"
+        class="absolute inset-0 h-full w-full rounded-full object-cover"
+        draggable="false"
+      />
+
+      <span class="eye-mask left-mask"></span>
+      <span class="eye-mask right-mask"></span>
+
+      <span class="eye left-eye">
+        <span class="iris"><span class="pupil"></span></span>
+      </span>
+
+      <span class="eye right-eye">
+        <span class="iris"><span class="pupil"></span></span>
+      </span>
+
+      <span id="mascot-lid"></span>
+    </div>
 
     <span class="absolute bottom-1.5 right-1.5 h-3 w-3 rounded-full border-2 border-[#0b0e18] bg-green-400"></span>
   </button>
 </div>
+
+<style>
+  #mascot-head {
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+
+  #mascot-img {
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .eye-mask {
+    position: absolute;
+    z-index: 3;
+    background: #030303;
+    border-radius: 50%;
+  }
+
+  .left-mask {
+    left: 45px;
+    top: 47px;
+    width: 25px;
+    height: 16px;
+    transform: rotate(10deg);
+  }
+
+  .right-mask {
+    left: 76px;
+    top: 52px;
+    width: 24px;
+    height: 15px;
+    transform: rotate(-6deg);
+  }
+
+  .eye {
+    position: absolute;
+    z-index: 5;
+    width: 20px;
+    height: 11px;
+    border-radius: 55% 55% 50% 50%;
+    overflow: hidden;
+    background: #f8f8f8;
+    border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 0 3px rgba(255,255,255,0.6);
+  }
+
+  .left-eye {
+    left: 48px;
+    top: 49px;
+    transform: rotate(10deg);
+  }
+
+  .right-eye {
+    left: 78px;
+    top: 53px;
+    transform: rotate(-6deg);
+  }
+
+  .iris {
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #8a430d;
+    box-shadow: inset 0 0 2px #000;
+    will-change: transform;
+  }
+
+  .pupil {
+    position: absolute;
+    left: 2.2px;
+    top: 2.2px;
+    width: 3.8px;
+    height: 3.8px;
+    border-radius: 999px;
+    background: #050505;
+  }
+
+  #mascot-lid {
+    position: absolute;
+    z-index: 8;
+    inset-inline: 0;
+    top: 0;
+    height: 0;
+    background: rgba(0,0,0,0.96);
+    pointer-events: none;
+    transition: height 0.11s ease-in;
+  }
+</style>
 
 <script is:inline>
   (() => {
@@ -42,9 +149,11 @@ const photo = "/images/mascot.png";
     ];
 
     const btn = document.getElementById("mascot-btn");
-    const img = document.getElementById("mascot-img");
+    const head = document.getElementById("mascot-head");
+    const lid = document.getElementById("mascot-lid");
     const bubble = document.getElementById("mascot-bubble");
     const text = document.getElementById("mascot-text");
+    const irises = document.querySelectorAll(".iris");
 
     let tx = 0, ty = 0;
     let cx = 0, cy = 0;
@@ -54,27 +163,38 @@ const photo = "/images/mascot.png";
       const mx = r.left + r.width / 2;
       const my = r.top + r.height / 2;
 
-      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 500));
-      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 500));
+      tx = Math.max(-1, Math.min(1, (e.clientX - mx) / 420));
+      ty = Math.max(-1, Math.min(1, (e.clientY - my) / 420));
     });
 
     function animateFace() {
-      cx += (tx - cx) * 0.07;
-      cy += (ty - cy) * 0.07;
+      cx += (tx - cx) * 0.08;
+      cy += (ty - cy) * 0.08;
 
-      img.style.transform =
-        `translate(${cx * 5}px, ${cy * 4}px) rotate(${cx * 4}deg)`;
+      head.style.transform =
+        `rotateY(${cx * 12}deg) rotateX(${-cy * 9}deg) translate(${cx * 3}px, ${cy * 2}px)`;
+
+      irises.forEach((eye) => {
+        eye.style.transform = `translate(${cx * 4}px, ${cy * 2.5}px)`;
+      });
 
       requestAnimationFrame(animateFace);
     }
 
     animateFace();
 
+    function blink() {
+      lid.style.height = "58%";
+      setTimeout(() => { lid.style.height = "0"; }, 120);
+      setTimeout(blink, 3000 + Math.random() * 4500);
+    }
+
+    setTimeout(blink, 2200);
+
     let bubbleTimer = null;
 
     function showBubble(message, duration = 4000) {
       text.textContent = message;
-
       bubble.classList.remove("opacity-0", "translate-y-2");
       bubble.classList.add("opacity-100", "translate-y-0");
 
